@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Trust & Quarantine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main class="page-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <span class="page-eyebrow">RESILIENCE & NETWORK INTEGRITY</span>
+            <h1 class="page-title">ADAPTIVE TRUST & <span class="purple-glow">QUARANTINE MATRIX</span></h1>
+            <p class="page-desc">The self-healing immune system of the MIRAGE framework. Evaluates node reliability in real-time and isolates compromised drones to prevent network cascading failures.</p>
+        </header>
+
+        <!-- Trust Scoring Grid -->
+        <section class="trust-architecture-grid">
+            <div class="trust-card">
+                <div class="trust-badge purple">CORE MECHANIC</div>
+                <h2>Dynamic Trust Score Engine</h2>
+                <p>Every UAV starts with a baseline trust score of <strong>100.0</strong>. When flagged by either Classical BFT or ML detectors, trust decays rapidly. Drones with scores under <strong>45.0</strong> trigger automatic physical quarantine.</p>
+
+                <div class="decay-rule-box">
+                    <div class="rule-item">
+                        <span class="rule-icon red">&#9660;</span>
+                        <div>
+                            <strong>FLAGGED DECAY:</strong>
+                            <p>Trust Score drops by -0.80 per flagged simulation cycle.</p>
+                        </div>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon green">&#9650;</span>
+                        <div>
+                            <strong>CLEAN RESTORATION:</strong>
+                            <p>Trust Score recovers by +0.15 when verifying consensus.</p>
+                        </div>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon cyan">&#128274;</span>
+                        <div>
+                            <strong>QUARANTINE THRESHOLD:</strong>
+                            <p>Score &lt; 45.0 triggers immediate physical holding isolation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quarantine Zone Visualization Card -->
+            <div class="trust-card">
+                <div class="trust-badge red">CONTAINMENT FIELD</div>
+                <h2>Physical Isolation Protocol</h2>
+                <p>Quarantined drones are physically redirected to a designated holding coordinate zone at <code>(SIM_WIDTH - 90, HEIGHT - 90)</code>. Their communication relay links are severed to prevent gossip poisoning.</p>
+
+                <div class="quarantine-diagram-box">
+                    <div class="corral-circle">
+                        <span>HOLDING ZONE</span>
+                        <div class="corral-node n1">#4</div>
+                        <div class="corral-node n2">#12</div>
+                        <div class="corral-node n3">#19</div>
+                    </div>
+                    <div class="corral-caption">
+                        <span>STATUS: 3 NODES CONTAINED</span>
+                        <span class="cyan">MESH HEALTH: 96.4%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Live Trust Score Simulator -->
+        <section class="interactive-trust-simulator">
+            <div class="section-header">
+                <span class="sec-subtitle">LIVE INTERACTIVE TESTBED</span>
+                <h2 class="sec-title">INTERACTIVE TRUST & QUARANTINE SIMULATOR</h2>
+            </div>
+            <p>Adjust drone parameters to simulate real-time trust decay, recovery cycles, and automated quarantine enforcement:</p>
+
+            <div class="simulator-controls-row">
+                <div class="sim-slider-box">
+                    <label><span>CURRENT TRUST:</span><strong id="sim-trust-val" class="cyan">100%</strong></label>
+                    <input type="range" id="sim-trust-slider" min="0" max="100" value="100">
+                </div>
+
+                <div class="sim-slider-box">
+                    <label><span>DECAY RATE:</span><strong id="sim-decay-val" class="red">-0.80 / cycle</strong></label>
+                    <input type="range" id="sim-decay-slider" min="0.1" max="2.5" step="0.1" value="0.8">
+                </div>
+
+                <div class="sim-slider-box">
+                    <label><span>RECOVERY RATE:</span><strong id="sim-recovery-val" class="green">+0.15 / cycle</strong></label>
+                    <input type="range" id="sim-recovery-slider" min="0.05" max="1.0" step="0.05" value="0.15">
+                </div>
+            </div>
+
+            <div class="sim-output-gauge">
+                <div>
+                    <span>SIMULATED NODE STATUS: </span>
+                    <strong id="sim-node-status" class="green">TRUSTED &bull; ACTIVE FORMATION</strong>
+                </div>
+                <button id="sim-inject-btn" class="sim-trigger-btn">TRIGGER BYZANTINE ATTACK</button>
+            </div>
+        </section>
+
+        <!-- Network Mesh Analysis Section -->
+        <section class="network-mesh-section">
+            <div class="section-header">
+                <span class="sec-subtitle">COMMUNICATION TOPOLOGY</span>
+                <h2 class="sec-title">INTER-DRONE MESH LINK DYNAMICS</h2>
+            </div>
+
+            <div class="mesh-breakdown-grid">
+                <div class="mesh-card trusted">
+                    <div class="mesh-header">
+                        <span class="mesh-indicator green"></span>
+                        <h3>TRUSTED LINK (CYAN / GREEN)</h3>
+                    </div>
+                    <p>Established between two verified honest nodes within communication radius (130px). Transmits verified telemetry, position consensus, and mission state updates.</p>
+                </div>
+
+                <div class="mesh-card compromised">
+                    <div class="mesh-header">
+                        <span class="mesh-indicator orange"></span>
+                        <h3>SUSPICIOUS / POISONED LINK (ORANGE)</h3>
+                    </div>
+                    <p>Link involving a suspected node. Broadcast coordinates conflict with majority votes or display high Isolation Forest anomaly scores.</p>
+                </div>
+
+                <div class="mesh-card severed">
+                    <div class="mesh-header">
+                        <span class="mesh-indicator red"></span>
+                        <h3>SEVERED LINK (QUARANTINED)</h3>
+                    </div>
+                    <p>When trust falls below 45.0, all communication edges connected to this drone are pruned from the network routing graph, preserving honest swarm quorum.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <a href="simulation.html" id="page-nav-prev" class="page-nav-btn prev">
+                <span>&larr;</span>
+                <span>PREV: 3D SIMULATION</span>
+            </a>
+            <div class="pagination-progress">
+                <span class="page-step-txt">PAGE 04 / 06 &bull; TRUST & QUARANTINE</span>
+                <div class="page-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <a href="telemetry.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: SCENARIOS & LOGS</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>QUARANTINE ENFORCER &bull; ZERO ADVERSARIAL PROPAGATION</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

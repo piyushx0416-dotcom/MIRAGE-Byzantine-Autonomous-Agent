@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Tactical Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main class="page-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <span class="page-eyebrow">1:1 FAITHFUL PYGAME KERNEL RECREATION</span>
+            <h1 class="page-title">TACTICAL <span class="cyan-glow">SWARM SIMULATION</span></h1>
+            <p class="page-desc">Direct recreation of the MIRAGE Pygame environment. Features Boids flight kinematics, real vs. spoofed coordinate tracking, detection glow rings, and interactive telemetry panels.</p>
+        </header>
+
+        <!-- Main PyGame Faithful Workbench -->
+        <div class="pygame-workbench-container">
+            <div id="pygame-sim-container"></div>
+        </div>
+
+        <!-- Hotkeys & Guide Section -->
+        <section class="hotkeys-guide-section">
+            <div class="section-header">
+                <span class="sec-subtitle">KEYBOARD & MOUSE CONTROLS</span>
+                <h2 class="sec-title">SIMULATION COMMAND SHORTCUTS</h2>
+            </div>
+            <div class="hotkeys-grid">
+                <div class="hotkey-card"><kbd>SPACE</kbd><span>Pause / Resume Simulation</span></div>
+                <div class="hotkey-card"><kbd>S</kbd><span>Open Scenario Selection Menu</span></div>
+                <div class="hotkey-card"><kbd>R</kbd><span>Reset Swarm & Detectors</span></div>
+                <div class="hotkey-card"><kbd>TAB</kbd><span>Cycle Right Stats Panel Pages</span></div>
+                <div class="hotkey-card"><kbd>CLICK</kbd><span>Select Any Drone on Canvas</span></div>
+                <div class="hotkey-card"><kbd>C</kbd><span>Toggle Communication Mesh Links</span></div>
+                <div class="hotkey-card"><kbd>M</kbd><span>Toggle Mission Scanning Overlay Grid</span></div>
+                <div class="hotkey-card"><kbd>G</kbd><span>Toggle Network Graph & Trust Trajectory</span></div>
+                <div class="hotkey-card"><kbd>T</kbd><span>Toggle Fake Reported Position Rays</span></div>
+                <div class="hotkey-card"><kbd>Q</kbd><span>Toggle Quarantine Enforcement</span></div>
+                <div class="hotkey-card"><kbd>N</kbd><span>Inspect Next Selected Drone</span></div>
+                <div class="hotkey-card"><kbd>1 / 2 / 3 / 4</kbd><span>Switch Detection Modes (Classical / ML / Both / Hybrid)</span></div>
+                <div class="hotkey-card"><kbd>L</kbd><span>Toggle Frame-by-Frame CSV Logging</span></div>
+                <div class="hotkey-card"><kbd>E</kbd><span>Export Simulation Session CSV Data</span></div>
+                <div class="hotkey-card"><kbd>ESC</kbd><span>Close Scenario or Graph Overlay</span></div>
+                <div class="hotkey-card"><kbd>&larr; / &rarr;</kbd><span>Navigate Between Website Pages</span></div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <a href="detector.html" id="page-nav-prev" class="page-nav-btn prev">
+                <span>&larr;</span>
+                <span>PREV: HYBRID DETECTOR</span>
+            </a>
+            <div class="pagination-progress">
+                <span class="page-step-txt">PAGE 03 / 06 &bull; 3D SIMULATION</span>
+                <div class="page-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <a href="quarantine.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: TRUST & QUARANTINE</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>60 FPS KERNEL &bull; HARDWARE ACCELERATED</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="simulation-engine.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

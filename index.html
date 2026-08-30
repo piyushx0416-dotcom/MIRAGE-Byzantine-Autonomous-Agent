@@ -1,22 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#050a15" />
-    <meta name="description" content="MIRAGE — Multi-agent Intelligent Resilient Autonomous Governance Engine. Byzantine fault tolerance for autonomous drone swarms." />
-    <title>MIRAGE | Byzantine Autonomous Agents</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-      /* Prevent FOUC — set background immediately */
-      html, body { background: #050a15; }
-    </style>
-    <script type="module" crossorigin src="/MIRAGE-Byzantine-Autonomous-Agent/assets/index-CK0Yq8Gw.js"></script>
-    <link rel="stylesheet" crossorigin href="/MIRAGE-Byzantine-Autonomous-Agent/assets/index-DrlfrvCm.css">
-  </head>
-  <body class="bg-void text-ghost antialiased overflow-x-hidden">
-    <div id="root"></div>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Command Deck</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Main Command Deck -->
+    <main class="page-container">
+        <!-- Hero Command Center Banner -->
+        <section class="command-deck-hero">
+            <div class="deck-top-bar">
+                <div class="intel-tag">
+                    <span class="live-blink"></span>
+                    <span id="typing-status">MIRAGE: BYZANTINE AUTONOMOUS AGENT ONLINE</span>
+                </div>
+                <div class="deck-version-chip">KERNEL V4.2 // ACTIVE</div>
+            </div>
+
+            <h1 class="hero-headline">TACTICAL COMMAND DECK & <span class="cyan-glow">SWARM DEFENSE</span></h1>
+            <p class="hero-description">
+                Autonomous multi-agent UAV resilience framework combining classical consensus voting and Machine Learning Isolation Forests to neutralize rogue drones in real-time.
+            </p>
+
+            <!-- Quick Telemetry Bar -->
+            <div class="quick-stats-bar">
+                <div class="stat-pill">
+                    <span class="stat-label">ACTIVE FLEET</span>
+                    <span class="stat-val">20-35 UAVs</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">DETECTION SUITE</span>
+                    <span class="stat-val cyan-glow">BFT + ML HYBRID</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">TRUST ENGINE</span>
+                    <span class="stat-val purple-glow">DYNAMIC DECAY</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">CONTAINMENT</span>
+                    <span class="stat-val red-glow">ISOLATION ZONE</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5-Column Interactive Project Details Section -->
+        <section class="project-details-section">
+            <div class="section-header">
+                <span class="sec-subtitle">PROJECT PILLARS // CLICK TO READ FULL SPECS</span>
+                <h2 class="sec-title">CORE RESEARCH & CAPABILITIES</h2>
+            </div>
+
+            <div class="project-columns-grid">
+                <!-- Pillar 1 -->
+                <div class="detail-column-card" data-topic="objective">
+                    <div class="detail-badge cyan">PILLAR 01</div>
+                    <div class="detail-icon">🎯</div>
+                    <h3>Autonomous Swarm Byzantine Defense</h3>
+                    <p class="detail-short">Mitigates internal rogue UAVs broadcasting fake coordinates or sabotaging multi-agent consensus.</p>
+                    <div class="read-more-tag">READ DETAILS &rarr;</div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="detail-column-card" data-topic="hybrid">
+                    <div class="detail-badge purple">PILLAR 02</div>
+                    <div class="detail-icon">⚡</div>
+                    <h3>Dual-Engine Hybrid Detection</h3>
+                    <p class="detail-short">Fuses Euclidean distance voting with 7-feature Isolation Forest machine learning anomaly analysis.</p>
+                    <div class="read-more-tag">READ DETAILS &rarr;</div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="detail-column-card" data-topic="trust">
+                    <div class="detail-badge orange">PILLAR 03</div>
+                    <div class="detail-icon">🛡️</div>
+                    <h3>Dynamic Trust & Physical Quarantine</h3>
+                    <p class="detail-short">Asymmetric score decay isolates confirmed malicious drones in a physical holding corral.</p>
+                    <div class="read-more-tag">READ DETAILS &rarr;</div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="detail-column-card" data-topic="scenarios">
+                    <div class="detail-badge red">PILLAR 04</div>
+                    <div class="detail-icon">⚔️</div>
+                    <h3>5 Adversarial Benchmark Scenarios</h3>
+                    <p class="detail-short">Tests position lies, gossip communication poisoning, mission sabotage, and 35-drone high stress limits.</p>
+                    <div class="read-more-tag">READ DETAILS &rarr;</div>
+                </div>
+
+                <!-- Pillar 5 -->
+                <div class="detail-column-card" data-topic="telemetry">
+                    <div class="detail-badge green">PILLAR 05</div>
+                    <div class="detail-icon">📊</div>
+                    <h3>Frame-by-Frame CSV Logging & Pandas</h3>
+                    <p class="detail-short">Automated data logging for post-mission Matplotlib analytics and precision-recall verification.</p>
+                    <div class="read-more-tag">READ DETAILS &rarr;</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <span class="page-step-txt">PAGE 01 / 06 &bull; COMMAND DECK</span>
+            <div class="pagination-progress">
+                <div class="page-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <a href="detector.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: HYBRID DETECTOR</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Project Detail Reader Modal -->
+    <div id="project-detail-modal" class="project-modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content-card">
+            <button class="modal-close-btn">&times;</button>
+            <div id="modal-body-content">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>ALL SENSORS NOMINAL &bull; 2026</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
 </html>

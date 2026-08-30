@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Telemetry Snapshots</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main class="page-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <span class="page-eyebrow">VISUAL TELEMETRY EVIDENCE</span>
+            <h1 class="page-title">PYGAME ENGINE <span class="cyan-glow">SNAPSHOTS GALLERY</span></h1>
+            <p class="page-desc">High-resolution frame captures from the live MIRAGE Python PyGame autonomous swarm simulation runtime. Click any snapshot to inspect in full-screen zoom.</p>
+        </header>
+
+        <!-- 4 High-Resolution Telemetry Snapshots Grid -->
+        <section class="gallery-showcase-grid">
+            <!-- Item 1 -->
+            <div class="gallery-item-card">
+                <div class="gallery-img-wrap">
+                    <img src="assets/Screenshot (14).png" alt="Overview Dashboard & Swarm Flight Grid" class="gallery-zoom-img">
+                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                </div>
+                <div class="gallery-caption-box">
+                    <span class="cap-idx">FIGURE 01</span>
+                    <h3>Swarm Flight Arena & Main Telemetry HUD</h3>
+                    <p>Live visualization of 20 autonomous UAVs in flight, showing real-time coordinate broadcasting, altitude floating oscillations, and side telemetry metrics.</p>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="gallery-item-card">
+                <div class="gallery-img-wrap">
+                    <img src="assets/Screenshot (18).png" alt="Hybrid Byzantine Detection & Outlier Flagging" class="gallery-zoom-img">
+                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                </div>
+                <div class="gallery-caption-box">
+                    <span class="cap-idx">FIGURE 02</span>
+                    <h3>Hybrid Byzantine Detection & Outlier Rays</h3>
+                    <p>Simultaneous detection of rogue nodes broadcasting falsified position vectors, showing red X crosshairs at spoofed coordinates and active detection rings.</p>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="gallery-item-card">
+                <div class="gallery-img-wrap">
+                    <img src="assets/Screenshot (20).png" alt="Quarantine Protocol & Dynamic Trust Decay" class="gallery-zoom-img">
+                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                </div>
+                <div class="gallery-caption-box">
+                    <span class="cap-idx">FIGURE 03</span>
+                    <h3>Quarantine Containment & Holding Corral</h3>
+                    <p>Demonstrates physical redirection of compromised UAVs into the dedicated containment zone once trust drops below the 45.0 threshold.</p>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="gallery-item-card">
+                <div class="gallery-img-wrap">
+                    <img src="assets/Screenshot (23).png" alt="Inter-Drone Communication Mesh Topology" class="gallery-zoom-img">
+                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                </div>
+                <div class="gallery-caption-box">
+                    <span class="cap-idx">FIGURE 04</span>
+                    <h3>Inter-Drone Communication Mesh Graph</h3>
+                    <p>Real-time network graph overlay showing trusted P2P mesh relay links in cyan and severed/quarantined node edges pruned from routing.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <a href="telemetry.html" id="page-nav-prev" class="page-nav-btn prev">
+                <span>&larr;</span>
+                <span>PREV: SCENARIOS & LOGS</span>
+            </a>
+            <div class="pagination-progress">
+                <span class="page-step-txt">PAGE 06 / 06 &bull; SNAPSHOTS GALLERY</span>
+                <div class="page-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                </div>
+            </div>
+            <a href="index.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: COMMAND DECK</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>ALL SENSORS NOMINAL &bull; 2026</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

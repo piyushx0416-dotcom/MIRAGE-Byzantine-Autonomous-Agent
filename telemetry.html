@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Scenarios & Telemetry</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main class="page-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <span class="page-eyebrow">ATTACK PROFILES & DATA PIPELINE</span>
+            <h1 class="page-title">SCENARIOS & <span class="cyan-glow">TELEMETRY ANALYTICS</span></h1>
+            <p class="page-desc">Explore the 5 benchmark adversarial scenarios designed to test MIRAGE fault tolerance limits, along with our Pandas and CSV telemetry logging pipeline.</p>
+        </header>
+
+        <!-- 5 Attack Scenarios Table / Bento -->
+        <section class="scenarios-matrix-section">
+            <div class="section-header">
+                <span class="sec-subtitle">BENCHMARK SUITE // CLICK ANY TO INSPECT PROFILE</span>
+                <h2 class="sec-title">5 BYZANTINE ATTACK SCENARIOS</h2>
+            </div>
+
+            <div class="scenarios-cards-grid">
+                <!-- Scenario 1 -->
+                <div class="scenario-card cyan-border active" data-scenario="1">
+                    <div class="scen-top">
+                        <span class="scen-num">SCENARIO 01</span>
+                        <span class="diff-tag normal">NORMAL</span>
+                    </div>
+                    <h3>Basic Position Lie Attack</h3>
+                    <div class="scen-meta">
+                        <span>TOTAL: 20</span>
+                        <span class="red">MALICIOUS: 5</span>
+                    </div>
+                    <p>Standard baseline where rogue drones broadcast falsified coordinate vectors while flying in normal formation.</p>
+                </div>
+
+                <!-- Scenario 2 -->
+                <div class="scenario-card purple-border" data-scenario="2">
+                    <div class="scen-top">
+                        <span class="scen-num">SCENARIO 02</span>
+                        <span class="diff-tag medium">MEDIUM</span>
+                    </div>
+                    <h3>Communication Attack</h3>
+                    <div class="scen-meta">
+                        <span>TOTAL: 24</span>
+                        <span class="red">MALICIOUS: 6</span>
+                    </div>
+                    <p>Adversarial nodes fabricate fake peer-to-peer neighbor reports, attempting to frame honest drones as outliers.</p>
+                </div>
+
+                <!-- Scenario 3 -->
+                <div class="scenario-card orange-border" data-scenario="3">
+                    <div class="scen-top">
+                        <span class="scen-num">SCENARIO 03</span>
+                        <span class="diff-tag hard">HARD</span>
+                    </div>
+                    <h3>Mission Sabotage Attack</h3>
+                    <div class="scen-meta">
+                        <span>TOTAL: 22</span>
+                        <span class="red">MALICIOUS: 7</span>
+                    </div>
+                    <p>Compromised agents claim completed mission tasks falsely while withholding real waypoint verification packets.</p>
+                </div>
+
+                <!-- Scenario 4 -->
+                <div class="scenario-card red-border" data-scenario="4">
+                    <div class="scen-top">
+                        <span class="scen-num">SCENARIO 04</span>
+                        <span class="diff-tag very-hard">VERY HARD</span>
+                    </div>
+                    <h3>Mixed Byzantine Attack</h3>
+                    <div class="scen-meta">
+                        <span>TOTAL: 26</span>
+                        <span class="red">MALICIOUS: 8</span>
+                    </div>
+                    <p>Simultaneous multi-vector assault combining position lies, gossip poisoning, mission sabotage, and dynamic evasion.</p>
+                </div>
+
+                <!-- Scenario 5 -->
+                <div class="scenario-card yellow-border" data-scenario="5">
+                    <div class="scen-top">
+                        <span class="scen-num">SCENARIO 05</span>
+                        <span class="diff-tag extreme">EXTREME</span>
+                    </div>
+                    <h3>High Stress Test</h3>
+                    <div class="scen-meta">
+                        <span>TOTAL: 35</span>
+                        <span class="red">MALICIOUS: 10</span>
+                    </div>
+                    <p>High-density swarm stress test evaluating memory limits, Isolation Forest latency, and real-time quarantine corralling throughput.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Scenario Live Testbed -->
+        <section class="interactive-scenario-testbed">
+            <div class="section-header">
+                <span class="sec-subtitle">REAL-TIME ATTACK BENCHMARK SIMULATOR</span>
+                <h2 id="testbed-title" class="sec-title cyan">SCENARIO 01: BASIC POSITION LIE ATTACK</h2>
+            </div>
+
+            <div class="testbed-display-grid">
+                <div class="testbed-info-box">
+                    <h3 id="testbed-desc-title">Attack Profile Analysis</h3>
+                    <p id="testbed-desc-text">In this baseline attack, malicious drones inject trigonometric coordinate offsets (sin/cos drift) into broadcast telemetry packets to evade classical distance thresholding.</p>
+                    <div class="testbed-metrics-row">
+                        <div class="t-metric">
+                            <span>DETECTION ACCURACY</span>
+                            <strong id="t-metric-acc" class="cyan">96.8%</strong>
+                        </div>
+                        <div class="t-metric">
+                            <span>CONTAINMENT TIME</span>
+                            <strong id="t-metric-time" class="green">14.2s</strong>
+                        </div>
+                        <div class="t-metric">
+                            <span>SWARM SURVIVABILITY</span>
+                            <strong id="t-metric-surv" class="purple">100.0%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-box">
+                    <div class="code-header"><span id="testbed-code-header">scenario_01_profile.json</span></div>
+                    <pre><code id="testbed-code-pre">{
+  "scenario_id": 1,
+  "name": "Basic Position Lie Attack",
+  "swarm_size": 20,
+  "byzantine_nodes": 5,
+  "attack_vector": "COORDINATE_SPOOFING",
+  "bft_voting_threshold": 60.0,
+  "ml_isolation_contamination": 0.25
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- CSV Logging & Analytics Pipeline -->
+        <section class="telemetry-pipeline-section">
+            <div class="section-header">
+                <span class="sec-subtitle">DATA EXPORT & LOG ANALYSIS</span>
+                <h2 class="sec-title">AUTOMATED LOGGING & PANDAS SUITE</h2>
+            </div>
+
+            <div class="pipeline-grid">
+                <div class="pipeline-card">
+                    <h3>CSV Telemetry Schema</h3>
+                    <p>During every live simulation run, telemetry is logged frame-by-frame with full state provenance:</p>
+                    <div class="code-box">
+                        <div class="code-header"><span>mirage_session_*.csv</span></div>
+                        <pre><code>frame, scenario, drone_id, is_malicious,
+classical_detected, ml_detected, hybrid_detected,
+trust_score, risk_score, mission_verified_progress,
+mission_integrity, network_health</code></pre>
+                    </div>
+                </div>
+
+                <div class="pipeline-card">
+                    <h3>Post-Run Analysis (analyze_logs.py)</h3>
+                    <p>Our automated analytics script parses CSV session data to plot precision-recall curves, trust degradation trajectories, and quarantine efficiency graphs using Matplotlib and Pandas.</p>
+                    <div class="code-box">
+                        <div class="code-header"><span>analyze_logs.py</span></div>
+                        <pre><code>df = pd.read_csv(latest_log_path)
+precision = true_positives / (true_positives + false_positives)
+recall = true_positives / (true_positives + false_negatives)
+plt.plot(df["frame"], df["mission_integrity"])</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <a href="quarantine.html" id="page-nav-prev" class="page-nav-btn prev">
+                <span>&larr;</span>
+                <span>PREV: TRUST & QUARANTINE</span>
+            </a>
+            <div class="pagination-progress">
+                <span class="page-step-txt">PAGE 05 / 06 &bull; SCENARIOS & LOGS</span>
+                <div class="page-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <a href="gallery.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: SNAPSHOTS GALLERY</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>SCENARIOS SUITE &bull; CSV LOGGING READY</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

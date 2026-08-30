@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Hybrid Detector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body data-theme="dark">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <main class="page-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <span class="page-eyebrow">CORE ALGORITHMS & ML PIPELINE</span>
+            <h1 class="page-title">HYBRID <span class="cyan-glow">BYZANTINE DETECTOR</span></h1>
+            <p class="page-desc">Dual-engine threat identification fusing deterministic spatial consensus voting with high-dimensional Isolation Forest machine learning.</p>
+        </header>
+
+        <!-- Two Engines Comparison Section -->
+        <section class="dual-engine-grid">
+            <!-- Engine 1: Classical BFT -->
+            <div class="engine-card">
+                <div class="engine-badge cyan">ENGINE 01 // DETERMINISTIC</div>
+                <h2>Classical BFT Distance Outlier Detector</h2>
+                <p>Calculates pairwise Euclidean distances across all broadcast coordinates. Drones whose average deviation exceeds the swarm's global clustered average by &Delta; &gt; threshold are flagged as Byzantine.</p>
+                
+                <div class="math-box">
+                    <div class="math-title">DEVIATION THRESHOLD FORMULA</div>
+                    <code>avg_deviation(d_i) &gt; global_avg + &theta;_threshold (60.0)</code>
+                </div>
+
+                <div class="code-box">
+                    <div class="code-header"><span>classical_detection.py</span></div>
+                    <pre><code>class ClassicalByzantineDetector:
+    def __init__(self, threshold=60):
+        self.threshold = threshold
+        self.suspected = set()
+
+    def detect(self, drones):
+        self.suspected = set()
+        for drone in drones:
+            rx, ry = drone.get_reported_position()
+            deviations = [
+                np.sqrt((rx - o.get_reported_position()[0])**2 + 
+                        (ry - o.get_reported_position()[1])**2)
+                for o in drones if o.id != drone.id
+            ]
+            if np.mean(deviations) > global_avg + self.threshold:
+                self.suspected.add(drone.id)
+        return self.suspected</code></pre>
+                </div>
+            </div>
+
+            <!-- Engine 2: ML Isolation Forest -->
+            <div class="engine-card">
+                <div class="engine-badge purple">ENGINE 02 // STATISTICAL ML</div>
+                <h2>Machine Learning Isolation Forest Detector</h2>
+                <p>Trains an ensemble of isolation trees on normalized multi-dimensional spatial-kinematic features. Detects subtle adversarial patterns such as velocity anomalies and spoofed neighbor distances.</p>
+                
+                <div class="features-list-box">
+                    <div class="math-title">7 EXTRACTED TELEMETRY FEATURES</div>
+                    <div class="feature-tag-grid">
+                        <span class="feat-tag">1. Report Error (Lie Distance)</span>
+                        <span class="feat-tag">2. Centroid Deviation</span>
+                        <span class="feat-tag">3. Avg Neighbor Distance</span>
+                        <span class="feat-tag">4. Min Neighbor Distance</span>
+                        <span class="feat-tag">5. Velocity Magnitude (|v|)</span>
+                        <span class="feat-tag">6. Raw X-Coordinate</span>
+                        <span class="feat-tag">7. Raw Y-Coordinate</span>
+                    </div>
+                </div>
+
+                <div class="code-box">
+                    <div class="code-header"><span>ml_detection.py</span></div>
+                    <pre><code>class MLByzantineDetector:
+    def __init__(self, contamination=0.25):
+        self.model = IsolationForest(
+            contamination=contamination, 
+            random_state=42
+        )
+        self.scaler = StandardScaler()
+
+    def extract_features(self, drone, all_drones):
+        return [report_error, dist_from_center, 
+                avg_neighbor_dist, min_neighbor_dist, 
+                vel_magnitude, rx, ry]
+
+    def detect(self, drones):
+        X_scaled = self.scaler.transform(features)
+        preds = self.model.predict(X_scaled)
+        # -1 indicates anomaly / Byzantine node</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hybrid Fusion & Accuracy Engine -->
+        <section class="hybrid-fusion-section">
+            <div class="section-header">
+                <span class="sec-subtitle">ENSEMBLE ARBITRATION</span>
+                <h2 class="sec-title">HYBRID DECISION MATRIX & ACCURACY</h2>
+            </div>
+
+            <div class="fusion-dashboard">
+                <div class="fusion-card">
+                    <h3>Classification States</h3>
+                    <div class="state-indicator-grid">
+                        <div class="state-box caught">
+                            <span class="dot-red"></span>
+                            <div>
+                                <strong>TRUE POSITIVE (RED)</strong>
+                                <p>Byzantine drone successfully isolated.</p>
+                            </div>
+                        </div>
+                        <div class="state-box false-alarm">
+                            <span class="dot-orange"></span>
+                            <div>
+                                <strong>FALSE POSITIVE (ORANGE)</strong>
+                                <p>Honest drone flagged due to transient boundary outlier.</p>
+                            </div>
+                        </div>
+                        <div class="state-box missed">
+                            <span class="dot-yellow"></span>
+                            <div>
+                                <strong>FALSE NEGATIVE (YELLOW)</strong>
+                                <p>Adversary undetected by active detector thresholds.</p>
+                            </div>
+                        </div>
+                        <div class="state-box honest">
+                            <span class="dot-green"></span>
+                            <div>
+                                <strong>TRUE NEGATIVE (GREEN)</strong>
+                                <p>Trusted honest drone maintaining formation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fusion-card formulas-card">
+                    <h3>Real-time Accuracy Evaluator</h3>
+                    <div class="formula-row">
+                        <span class="label">PRECISION:</span>
+                        <code>Precision = TP / (TP + FP)</code>
+                    </div>
+                    <div class="formula-row">
+                        <span class="label">RECALL:</span>
+                        <code>Recall = TP / (TP + FN)</code>
+                    </div>
+                    <div class="formula-row">
+                        <span class="label">F1-SCORE:</span>
+                        <code>F1 = 2 * (Precision * Recall) / (Precision + Recall)</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tactical Pagination Bar -->
+        <div class="tactical-pagination-bar">
+            <a href="index.html" id="page-nav-prev" class="page-nav-btn prev">
+                <span>&larr;</span>
+                <span>PREV: COMMAND DECK</span>
+            </a>
+            <div class="pagination-progress">
+                <span class="page-step-txt">PAGE 02 / 06 &bull; HYBRID DETECTOR</span>
+                <div class="page-dots">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <a href="simulation.html" id="page-nav-next" class="page-nav-btn next">
+                <span>NEXT: 3D SIMULATION</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="hud-footer">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <span class="footer-logo">MIRAGE: BYZANTINE AUTONOMOUS AGENT</span>
+                <p>Autonomous Drone Swarm Byzantine Fault Tolerance Research Project.</p>
+            </div>
+            <div class="footer-right-status">
+                <span>DETECTION KERNEL &bull; PRECISION &gt; 94.8%</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

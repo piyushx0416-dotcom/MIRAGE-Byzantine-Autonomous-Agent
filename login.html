@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRAGE: Byzantine Autonomous Agent // Gateway</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="assets/jet_sound_b64.js"></script>
+</head>
+<body data-theme="dark" class="login-body">
+    <!-- Ambient Particle Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Hidden Master Audio Track -->
+    <audio id="jet-master-audio" preload="auto" src="assets/jet_flyby.wav"></audio>
+
+    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <div class="floating-theme-switch">
+        <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
+            <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Centered 3D Cyber Mirage Fighter Jet Stage -->
+    <main class="login-gateway-container">
+        <div class="login-3d-stage">
+            <div class="login-canvas-wrap">
+                <canvas id="login-3d-jet-canvas"></canvas>
+            </div>
+            <div class="login-drag-hint">
+                <span>[ DRAG TO ROTATE 360° // MOVE TO BANK &amp; ROLL ]</span>
+            </div>
+        </div>
+
+        <div class="login-action-box">
+            <h1 class="login-brand-title">M . I . R . A . G . E</h1>
+            <p class="login-sub-brand">BYZANTINE AUTONOMOUS AGENT</p>
+            
+            <a href="index.html" id="btn-enter-system" class="btn-enter-portal">
+                <span class="enter-btn-glitch"></span>
+                <span class="enter-btn-text">ENTER SYSTEM</span>
+                <span class="enter-btn-arrow">&rarr;</span>
+            </a>
+            
+            <div class="login-meta-txt">
+                <span>CLEARANCE LEVEL: OPERATOR AUTHORIZED</span>
+            </div>
+        </div>
+    </main>
+
+    <script src="3d-logo.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
