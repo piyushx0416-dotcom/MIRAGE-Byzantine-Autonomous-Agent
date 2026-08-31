@@ -24,14 +24,7 @@ function createEnhancedMirageFighterJet() {
         color: 0x00ffff,
         wireframe: true,
         transparent: true,
-        opacity: 0.5
-    });
-    const wireframeGlowMat = new THREE.MeshBasicMaterial({
-        color: 0x00ffff,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.15,
-        blending: THREE.AdditiveBlending
+        opacity: 0.45
     });
 
     const canopyMat = new THREE.MeshStandardMaterial({
@@ -206,24 +199,8 @@ function createEnhancedMirageFighterJet() {
     jetGroup.plumeInner = plumeInner;
     jetGroup.plumeOuter = plumeOuter;
 
-    // Pulsing exhaust point light
-    const exhaustLight = new THREE.PointLight(0x00ffff, 3, 8);
-    exhaustLight.position.set(0, 0, -3.5);
-    jetGroup.add(exhaustLight);
-    jetGroup.exhaustLight = exhaustLight;
-
-    // Wingtip navigation lights
-    const leftWingLight = new THREE.PointLight(0xff3c3c, 1.5, 4);
-    leftWingLight.position.set(-4.2, -0.04, -2.5);
-    jetGroup.add(leftWingLight);
-    const rightWingLight = new THREE.PointLight(0x00ff64, 1.5, 4);
-    rightWingLight.position.set(4.2, -0.04, -2.5);
-    jetGroup.add(rightWingLight);
-    jetGroup.leftWingLight = leftWingLight;
-    jetGroup.rightWingLight = rightWingLight;
-
     // 9. Lightweight Exhaust Particles (GPU Points)
-    const particleCount = 80;
+    const particleCount = 45;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
     const particleSpeeds = new Float32Array(particleCount);
@@ -368,8 +345,6 @@ function initLogin3DStage() {
         frame++;
 
         if (!isDragging) {
-            // Gentle auto-rotation when idle
-            targetRotationY += 0.003;
             targetRotationY += velocityY;
             targetRotationX += velocityX;
             velocityY *= 0.92;
@@ -388,17 +363,6 @@ function initLogin3DStage() {
             const scaleZ = 1.0 + Math.sin(frame * 0.25) * 0.18;
             jet.plumeInner.scale.set(1.0, 1.0, scaleZ);
             jet.plumeOuter.scale.set(1.0, 1.0, scaleZ * 1.1);
-        }
-
-        // Exhaust light pulsing
-        if (jet.exhaustLight) {
-            jet.exhaustLight.intensity = 2 + Math.sin(frame * 0.2) * 1.5;
-            jet.exhaustLight.color.setHSL(0.5 + Math.sin(frame * 0.05) * 0.05, 1, 0.5);
-        }
-        // Wingtip light blink
-        if (jet.leftWingLight) {
-            jet.leftWingLight.intensity = Math.sin(frame * 0.15) > 0 ? 1.5 : 0.3;
-            jet.rightWingLight.intensity = Math.sin(frame * 0.15 + Math.PI) > 0 ? 1.5 : 0.3;
         }
 
         // Particle Exhaust Trail
