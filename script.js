@@ -145,6 +145,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 11. Ambient Particle Background
     initLightweightBackground();
+
+    // 12. Before/After Comparison Sliders
+    initComparisonSliders();
+
+    // 13. Graph Analytics Tab Filtering
+    initGraphTabs();
+
+    // 14. Intersection Observer Scroll Reveals
+    initScrollReveals();
+
+    // 15. Scroll Progress Bar
+    initScrollProgressBar();
+
+    // 16. Card 3D Tilt on Hover
+    initCardTilt();
+
+    // 17. Animated Counters
+    initAnimatedCounters();
+
+    // 18. Sticky Nav Visibility
+    initStickyNav();
 });
 
 // Cyber Text Decrypt Scramble Effect on Headings
@@ -685,4 +706,209 @@ function initLightweightBackground() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // Parallax: particles follow mouse subtly
+    window.addEventListener('mousemove', (e) => {
+        const mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        const my = (e.clientY / window.innerHeight - 0.5) * 2;
+        if (points) {
+            points.rotation.x = my * 0.08;
+            points.rotation.z = mx * 0.05;
+        }
+    });
 }
+
+// =========================================================================
+// BEFORE/AFTER COMPARISON SLIDERS
+// =========================================================================
+function initComparisonSliders() {
+    const sliders = document.querySelectorAll('.comparison-slider-container');
+    if (sliders.length === 0) return;
+
+    sliders.forEach(container => {
+        const handle = container.querySelector('.comparison-handle');
+        const afterWrap = container.querySelector('.comparison-after-wrap');
+        if (!handle || !afterWrap) return;
+
+        let isDragging = false;
+
+        function updatePosition(clientX) {
+            const rect = container.getBoundingClientRect();
+            let x = clientX - rect.left;
+            x = Math.max(20, Math.min(rect.width - 20, x));
+            const pct = (x / rect.width) * 100;
+            handle.style.left = pct + '%';
+            afterWrap.style.width = pct + '%';
+        }
+
+        handle.addEventListener('mousedown', (e) => { isDragging = true; e.preventDefault(); });
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            updatePosition(e.clientX);
+        });
+        window.addEventListener('mousemove', (e) => { if (isDragging) updatePosition(e.clientX); });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Touch support
+        handle.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); });
+        container.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            updatePosition(e.touches[0].clientX);
+        });
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) updatePosition(e.touches[0].clientX);
+        });
+        window.addEventListener('touchend', () => { isDragging = false; });
+    });
+}
+
+// =========================================================================
+// GRAPH ANALYTICS TAB FILTERING
+// =========================================================================
+function initGraphTabs() {
+    const tabs = document.querySelectorAll('.graph-tab-btn');
+    const cards = document.querySelectorAll('.graph-card');
+    if (tabs.length === 0 || cards.length === 0) return;
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const filter = tab.getAttribute('data-filter');
+            cards.forEach(card => {
+                if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                    card.style.display = '';
+                    card.style.animation = 'fadeInScale 0.4s ease forwards';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// =========================================================================
+// INTERSECTION OBSERVER SCROLL REVEALS
+// =========================================================================
+function initScrollReveals() {
+    const revealElements = document.querySelectorAll('.scroll-reveal, .project-columns-grid, .scenarios-cards-grid, .gallery-showcase-grid, .hotkeys-grid, .trust-architecture-grid, .mesh-breakdown-grid');
+    if (revealElements.length === 0) return;
+
+    // Add scroll-reveal class to grids that don't have it
+    revealElements.forEach(el => {
+        if (!el.classList.contains('scroll-reveal')) {
+            el.classList.add('scroll-reveal');
+        }
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// =========================================================================
+// SCROLL PROGRESS BAR
+// =========================================================================
+function initScrollProgressBar() {
+    const progressBar = document.getElementById('scroll-progress');
+    if (!progressBar) return;
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = scrollPct + '%';
+    });
+}
+
+// =========================================================================
+// CARD 3D TILT ON HOVER
+// =========================================================================
+function initCardTilt() {
+    const cards = document.querySelectorAll('.detail-column-card, .scenario-card, .gallery-item-card, .graph-card, .trust-card, .mesh-card');
+    if (cards.length === 0) return;
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
+
+// =========================================================================
+// ANIMATED COUNTERS
+// =========================================================================
+function initAnimatedCounters() {
+    const statVals = document.querySelectorAll('.stat-val');
+    if (statVals.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.dataset.animated) {
+                entry.target.dataset.animated = 'true';
+                const text = entry.target.textContent;
+                const match = text.match(/(\d+)/);
+                if (match) {
+                    const target = parseInt(match[1]);
+                    let current = 0;
+                    const step = Math.max(1, Math.floor(target / 30));
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        entry.target.textContent = text.replace(match[1], current);
+                    }, 30);
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    statVals.forEach(el => observer.observe(el));
+}
+
+// =========================================================================
+// STICKY NAV VISIBILITY
+// =========================================================================
+function initStickyNav() {
+    const nav = document.querySelector('.sticky-nav');
+    if (!nav) return;
+
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.scrollY;
+        if (currentScroll > 200) {
+            nav.classList.add('visible');
+        } else {
+            nav.classList.remove('visible');
+        }
+        lastScroll = currentScroll;
+    });
+}
+

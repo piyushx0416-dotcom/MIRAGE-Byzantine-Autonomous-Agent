@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MIRAGE Byzantine Autonomous Agent — Visual telemetry snapshots, before/after evolution comparison, and benchmark analytics graphs.">
+    <meta name="theme-color" content="#00ffff">
     <title>MIRAGE: Byzantine Autonomous Agent // Telemetry Snapshots</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
@@ -10,22 +12,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body data-theme="dark">
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar" id="scroll-progress"></div>
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky-nav">
+        <span class="sticky-nav-brand">MIRAGE</span>
+        <div class="sticky-nav-dots">
+            <a href="index.html" class="sticky-nav-dot" title="Command Deck"></a>
+            <a href="detector.html" class="sticky-nav-dot" title="Hybrid Detector"></a>
+            <a href="simulation.html" class="sticky-nav-dot" title="Simulation"></a>
+            <a href="quarantine.html" class="sticky-nav-dot" title="Trust & Quarantine"></a>
+            <a href="telemetry.html" class="sticky-nav-dot" title="Scenarios"></a>
+            <a href="gallery.html" class="sticky-nav-dot active" title="Snapshots"></a>
+        </div>
+    </nav>
+
     <!-- Ambient Particle Canvas -->
     <div id="canvas-container"></div>
 
-    <!-- ONLY Floating Light/Dark Mode Switch -->
+    <!-- Floating Light/Dark Mode Switch -->
     <div class="floating-theme-switch">
         <button id="theme-mode-btn" class="hud-icon-btn" aria-label="Toggle Theme Mode" title="Toggle Light/Dark Theme">
             <svg class="mode-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
             <svg class="mode-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
@@ -37,61 +51,176 @@
         <!-- Page Header -->
         <header class="page-header">
             <span class="page-eyebrow">VISUAL TELEMETRY EVIDENCE</span>
-            <h1 class="page-title">PYGAME ENGINE <span class="cyan-glow">SNAPSHOTS GALLERY</span></h1>
-            <p class="page-desc">High-resolution frame captures from the live MIRAGE Python PyGame autonomous swarm simulation runtime. Click any snapshot to inspect in full-screen zoom.</p>
+            <h1 class="page-title">PYGAME ENGINE <span class="cyan-glow">SNAPSHOTS & ANALYTICS</span></h1>
+            <p class="page-desc">High-resolution frame captures, before/after evolution comparisons, and benchmark analytics from the live MIRAGE Python PyGame autonomous swarm simulation runtime.</p>
         </header>
 
-        <!-- 4 High-Resolution Telemetry Snapshots Grid -->
-        <section class="gallery-showcase-grid">
-            <!-- Item 1 -->
-            <div class="gallery-item-card">
-                <div class="gallery-img-wrap">
-                    <img src="assets/Screenshot (14).png" alt="Overview Dashboard & Swarm Flight Grid" class="gallery-zoom-img">
-                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+        <!-- ===== SECTION 1: EVOLUTION COMPARISON SLIDER ===== -->
+        <section class="comparison-section scroll-reveal">
+            <div class="section-header">
+                <span class="sec-subtitle">BEFORE vs AFTER // DRAG TO COMPARE</span>
+                <h2 class="sec-title">SIMULATION EVOLUTION</h2>
+            </div>
+            <div class="comparison-grid">
+                <!-- Comparison 1 -->
+                <div>
+                    <div class="comparison-slider-container" data-comparison="1">
+                        <img src="assets/Screenshot (14).png" alt="After: Enhanced Simulation" class="comparison-img">
+                        <div class="comparison-after-wrap">
+                            <img src="assets/Screenshot (23).png" alt="Before: Early Simulation" class="comparison-img">
+                        </div>
+                        <div class="comparison-handle"></div>
+                        <span class="comparison-label before">EARLY BUILD</span>
+                        <span class="comparison-label after">FINAL BUILD</span>
+                    </div>
+                    <p class="comparison-caption">Swarm Flight Arena — Basic → Full Telemetry HUD</p>
                 </div>
-                <div class="gallery-caption-box">
-                    <span class="cap-idx">FIGURE 01</span>
-                    <h3>Swarm Flight Arena & Main Telemetry HUD</h3>
-                    <p>Live visualization of 20 autonomous UAVs in flight, showing real-time coordinate broadcasting, altitude floating oscillations, and side telemetry metrics.</p>
+                <!-- Comparison 2 -->
+                <div>
+                    <div class="comparison-slider-container" data-comparison="2">
+                        <img src="assets/Screenshot (18).png" alt="After: Detection Overlay" class="comparison-img">
+                        <div class="comparison-after-wrap">
+                            <img src="assets/Screenshot (20).png" alt="Before: Quarantine" class="comparison-img">
+                        </div>
+                        <div class="comparison-handle"></div>
+                        <span class="comparison-label before">DETECTION</span>
+                        <span class="comparison-label after">QUARANTINE</span>
+                    </div>
+                    <p class="comparison-caption">Byzantine Detection → Quarantine Containment</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Item 2 -->
-            <div class="gallery-item-card">
-                <div class="gallery-img-wrap">
-                    <img src="assets/Screenshot (18).png" alt="Hybrid Byzantine Detection & Outlier Flagging" class="gallery-zoom-img">
-                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
-                </div>
-                <div class="gallery-caption-box">
-                    <span class="cap-idx">FIGURE 02</span>
-                    <h3>Hybrid Byzantine Detection & Outlier Rays</h3>
-                    <p>Simultaneous detection of rogue nodes broadcasting falsified position vectors, showing red X crosshairs at spoofed coordinates and active detection rings.</p>
-                </div>
+        <!-- ===== SECTION 2: BENCHMARK ANALYTICS GRAPHS ===== -->
+        <section class="analytics-section scroll-reveal">
+            <div class="section-header">
+                <span class="sec-subtitle">SIMULATION BENCHMARK DATA // MATPLOTLIB ANALYTICS</span>
+                <h2 class="sec-title">PERFORMANCE <span class="cyan-glow">ANALYTICS</span></h2>
             </div>
 
-            <!-- Item 3 -->
-            <div class="gallery-item-card">
-                <div class="gallery-img-wrap">
-                    <img src="assets/Screenshot (20).png" alt="Quarantine Protocol & Dynamic Trust Decay" class="gallery-zoom-img">
-                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
-                </div>
-                <div class="gallery-caption-box">
-                    <span class="cap-idx">FIGURE 03</span>
-                    <h3>Quarantine Containment & Holding Corral</h3>
-                    <p>Demonstrates physical redirection of compromised UAVs into the dedicated containment zone once trust drops below the 45.0 threshold.</p>
-                </div>
+            <!-- Graph Tabs -->
+            <div class="graph-tabs-nav">
+                <button class="graph-tab-btn active" data-filter="all">ALL GRAPHS</button>
+                <button class="graph-tab-btn" data-filter="detection">DETECTION</button>
+                <button class="graph-tab-btn" data-filter="trust">TRUST SYSTEM</button>
+                <button class="graph-tab-btn" data-filter="network">NETWORK</button>
+                <button class="graph-tab-btn" data-filter="risk">RISK ANALYSIS</button>
             </div>
 
-            <!-- Item 4 -->
-            <div class="gallery-item-card">
-                <div class="gallery-img-wrap">
-                    <img src="assets/Screenshot (23).png" alt="Inter-Drone Communication Mesh Topology" class="gallery-zoom-img">
-                    <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+            <!-- Graph Cards Grid -->
+            <div class="graph-grid">
+                <div class="graph-card featured" data-category="detection">
+                    <img src="assets/graphs/final_method_comparison.png" alt="Method Comparison" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Final Method Comparison — Recall & Precision</h4>
+                        <p>Bar chart comparing Classical BFT, ML Isolation Forest, and Hybrid Defense detection accuracy.</p>
+                    </div>
                 </div>
-                <div class="gallery-caption-box">
-                    <span class="cap-idx">FIGURE 04</span>
-                    <h3>Inter-Drone Communication Mesh Graph</h3>
-                    <p>Real-time network graph overlay showing trusted P2P mesh relay links in cyan and severed/quarantined node edges pruned from routing.</p>
+
+                <div class="graph-card" data-category="trust">
+                    <img src="assets/graphs/average_trust_over_time.png" alt="Trust Over Time" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Average Swarm Trust Score</h4>
+                        <p>Trust decay trajectory across simulation frames.</p>
+                    </div>
+                </div>
+
+                <div class="graph-card" data-category="detection">
+                    <img src="assets/graphs/detection_recall_over_time.png" alt="Detection Recall" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Detection Recall Over Time</h4>
+                        <p>How recall improves as the detector converges.</p>
+                    </div>
+                </div>
+
+                <div class="graph-card" data-category="detection">
+                    <img src="assets/graphs/false_alarms_over_time.png" alt="False Alarms" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>False Alarm Rate</h4>
+                        <p>Tracking false positives across simulation runtime.</p>
+                    </div>
+                </div>
+
+                <div class="graph-card" data-category="trust">
+                    <img src="assets/graphs/final_trust_distribution.png" alt="Trust Distribution" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Final Trust Score Distribution</h4>
+                        <p>Histogram showing final trust spread across all drones.</p>
+                    </div>
+                </div>
+
+                <div class="graph-card" data-category="network">
+                    <img src="assets/graphs/network_and_mission_over_time.png" alt="Network & Mission" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Network Health & Mission Integrity</h4>
+                        <p>Dual-axis graph tracking swarm connectivity and task completion.</p>
+                    </div>
+                </div>
+
+                <div class="graph-card" data-category="risk">
+                    <img src="assets/graphs/risk_score_over_time.png" alt="Risk Score" class="gallery-zoom-img">
+                    <div class="graph-info">
+                        <h4>Composite Risk Score</h4>
+                        <p>Aggregated risk metric combining trust, detection, and network signals.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 3: ORIGINAL SNAPSHOT GALLERY ===== -->
+        <section class="scroll-reveal">
+            <div class="section-header">
+                <span class="sec-subtitle">HIGH-RESOLUTION FRAME CAPTURES</span>
+                <h2 class="sec-title">PYGAME <span class="cyan-glow">SNAPSHOTS</span></h2>
+            </div>
+
+            <div class="gallery-showcase-grid">
+                <div class="gallery-item-card">
+                    <div class="gallery-img-wrap">
+                        <img src="assets/Screenshot (14).png" alt="Overview Dashboard & Swarm Flight Grid" class="gallery-zoom-img">
+                        <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                    </div>
+                    <div class="gallery-caption-box">
+                        <span class="cap-idx">FIGURE 01</span>
+                        <h3>Swarm Flight Arena & Main Telemetry HUD</h3>
+                        <p>Live visualization of 20 autonomous UAVs in flight, showing real-time coordinate broadcasting, altitude oscillations, and side telemetry metrics.</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item-card">
+                    <div class="gallery-img-wrap">
+                        <img src="assets/Screenshot (18).png" alt="Hybrid Byzantine Detection & Outlier Flagging" class="gallery-zoom-img">
+                        <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                    </div>
+                    <div class="gallery-caption-box">
+                        <span class="cap-idx">FIGURE 02</span>
+                        <h3>Hybrid Byzantine Detection & Outlier Rays</h3>
+                        <p>Simultaneous detection of rogue nodes broadcasting falsified position vectors, showing red X crosshairs and active detection rings.</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item-card">
+                    <div class="gallery-img-wrap">
+                        <img src="assets/Screenshot (20).png" alt="Quarantine Protocol & Dynamic Trust Decay" class="gallery-zoom-img">
+                        <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                    </div>
+                    <div class="gallery-caption-box">
+                        <span class="cap-idx">FIGURE 03</span>
+                        <h3>Quarantine Containment & Holding Corral</h3>
+                        <p>Physical redirection of compromised UAVs into the containment zone once trust drops below the 45.0 threshold.</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item-card">
+                    <div class="gallery-img-wrap">
+                        <img src="assets/Screenshot (23).png" alt="Inter-Drone Communication Mesh Topology" class="gallery-zoom-img">
+                        <div class="zoom-badge">🔍 CLICK TO ZOOM</div>
+                    </div>
+                    <div class="gallery-caption-box">
+                        <span class="cap-idx">FIGURE 04</span>
+                        <h3>Inter-Drone Communication Mesh Graph</h3>
+                        <p>Real-time network graph overlay showing trusted P2P mesh relay links and severed quarantined node edges.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -103,14 +232,10 @@
                 <span>PREV: SCENARIOS & LOGS</span>
             </a>
             <div class="pagination-progress">
-                <span class="page-step-txt">PAGE 06 / 06 &bull; SNAPSHOTS GALLERY</span>
+                <span class="page-step-txt">PAGE 06 / 06 &bull; SNAPSHOTS & ANALYTICS</span>
                 <div class="page-dots">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot active"></span>
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span class="dot"></span><span class="dot"></span><span class="dot active"></span>
                 </div>
             </div>
             <a href="index.html" id="page-nav-next" class="page-nav-btn next">
@@ -120,7 +245,7 @@
         </div>
     </main>
 
-    <!-- Clean Minimal Footer -->
+    <!-- Footer -->
     <footer class="hud-footer">
         <div class="footer-inner">
             <div class="footer-left">

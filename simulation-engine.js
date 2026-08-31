@@ -33,6 +33,11 @@ class PygameMirageSimulation {
         this.paused = false;
         this.frame = 0;
         this.selectedDroneId = 0;
+        this.trustHistory = [];
+        this.maxHistoryLength = 200;
+        this.lastDetectionFrame = 0;
+        this.lastFrameTime = performance.now();
+        this.fps = 60;
 
         // 5 Attack Scenarios matching apply_scenario_menu_upgrade.py
         this.scenarios = [
@@ -176,6 +181,8 @@ class PygameMirageSimulation {
         this.hybridSuspected.clear();
         this.trustScores = {};
         this.verifiedCells.clear();
+        this.trustHistory = [];
+        this.lastDetectionFrame = 0;
 
         const maliciousSet = new Set();
         while (maliciousSet.size < this.maliciousCount) {
@@ -221,6 +228,30 @@ class PygameMirageSimulation {
                 d.x += d.vx;
                 d.y += d.vy;
             } else {
+                // Boids-style flocking forces
+                let sepX = 0, sepY = 0, cohX = 0, cohY = 0, aliVx = 0, aliVy = 0, neighbors = 0;
+                this.drones.forEach(other => {
+                    if (other.id === d.id || this.quarantinedDrones.has(other.id)) return;
+                    const dist = Math.hypot(d.x - other.x, d.y - other.y);
+                    if (dist < 60 && dist > 0) {
+                        sepX += (d.x - other.x) / dist * 0.3;
+                        sepY += (d.y - other.y) / dist * 0.3;
+                    }
+                    if (dist < 150) {
+                        cohX += other.x; cohY += other.y;
+                        aliVx += other.vx; aliVy += other.vy;
+                        neighbors++;
+                    }
+                });
+                if (neighbors > 0) {
+                    d.vx += ((cohX / neighbors - d.x) * 0.003) + ((aliVx / neighbors - d.vx) * 0.02);
+                    d.vy += ((cohY / neighbors - d.y) * 0.003) + ((aliVy / neighbors - d.vy) * 0.02);
+                }
+                d.vx += sepX * 0.05;
+                d.vy += sepY * 0.05;
+                const speed = Math.hypot(d.vx, d.vy);
+                if (speed > 3.0) { d.vx = (d.vx / speed) * 3.0; d.vy = (d.vy / speed) * 3.0; }
+
                 // Honest drones and unquarantined roam freely
                 d.x += d.vx;
                 d.y += d.vy;
@@ -251,29 +282,58 @@ class PygameMirageSimulation {
                 d.reportedY = d.y + (Math.random() - 0.5) * 1.5;
             }
         });
+        // 2-4. Detection (run every 15 frames for performance, matching PyGame)
+        const runDetection = (this.frame - this.lastDetectionFrame) >= 15;
+        if (runDetection) {
+            this.lastDetectionFrame = this.frame;
+            this.classicalSuspected.clear();
+            this.mlSuspected.clear();
+            this.hybridSuspected.clear();
 
-        // 2. Classical BFT voting detector
-        this.drones.forEach(d => {
-            if (d.isMalicious) {
-                // Malicious drones have large discrepancy
-                this.classicalSuspected.add(d.id);
-            }
-        });
+            // 2. Classical BFT voting detector (centroid-based distance)
+            const reportedPositions = this.drones.map(d => ({ x: d.reportedX, y: d.reportedY }));
+            const centroidX = reportedPositions.reduce((s, p) => s + p.x, 0) / this.drones.length;
+            const centroidY = reportedPositions.reduce((s, p) => s + p.y, 0) / this.drones.length;
+            this.drones.forEach(d => {
+                const deviation = Math.hypot(d.reportedX - centroidX, d.reportedY - centroidY);
+                if (deviation > this.threshold) {
+                    this.classicalSuspected.add(d.id);
+                }
+            });
 
-        // 3. ML Isolation Forest Anomaly Detection
-        this.drones.forEach(d => {
-            const lieDist = Math.hypot(d.reportedX - d.x, d.reportedY - d.y);
-            if (lieDist > 45) {
-                this.mlSuspected.add(d.id);
-            }
-        });
+            // 3. ML Isolation Forest - multi-feature anomaly scoring
+            const features = this.drones.map(d => {
+                const lieDist = Math.hypot(d.reportedX - d.x, d.reportedY - d.y);
+                const centroidDev = Math.hypot(d.reportedX - centroidX, d.reportedY - centroidY);
+                const velocity = Math.hypot(d.vx, d.vy);
+                const dists = this.drones.filter(o => o.id !== d.id)
+                    .map(o => Math.hypot(d.x - o.x, d.y - o.y))
+                    .sort((a, b) => a - b);
+                const neighborIso = dists.length >= 3 ? (dists[0] + dists[1] + dists[2]) / 3 : 999;
+                return { id: d.id, lieDist, centroidDev, velocity, neighborIso };
+            });
+            const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+            const std = (arr) => { const m = mean(arr); return Math.sqrt(arr.reduce((s, v) => s + (v - m) ** 2, 0) / arr.length) || 1; };
+            const lieVals = features.map(f => f.lieDist);
+            const centVals = features.map(f => f.centroidDev);
+            const lieMean = mean(lieVals), lieStd = std(lieVals);
+            const centMean = mean(centVals), centStd = std(centVals);
+            features.forEach(f => {
+                const lieZ = (f.lieDist - lieMean) / lieStd;
+                const centZ = (f.centroidDev - centMean) / centStd;
+                const anomalyScore = lieZ * 0.5 + centZ * 0.35 + (f.neighborIso > 120 ? 0.5 : 0);
+                if (anomalyScore > 1.2) {
+                    this.mlSuspected.add(f.id);
+                }
+            });
 
-        // 4. Hybrid Consensus
-        this.drones.forEach(d => {
-            if (this.classicalSuspected.has(d.id) || this.mlSuspected.has(d.id)) {
-                this.hybridSuspected.add(d.id);
-            }
-        });
+            // 4. Hybrid Consensus
+            this.drones.forEach(d => {
+                if (this.classicalSuspected.has(d.id) || this.mlSuspected.has(d.id)) {
+                    this.hybridSuspected.add(d.id);
+                }
+            });
+        }
 
         // 5. Trust Decay & Accurate Quarantine (ONLY Malicious get Quarantined)
         this.drones.forEach(d => {
@@ -298,6 +358,15 @@ class PygameMirageSimulation {
 
         if (this.loggingEnabled && this.frame % 10 === 0) {
             this.logRowsWritten += this.totalDrones;
+        }
+
+        // Track history for real-time graph overlay
+        if (this.frame % 5 === 0) {
+            const avgTrust = Object.values(this.trustScores).reduce((a, b) => a + b, 0) / this.totalDrones;
+            const detRate = (this.drones.filter(d => d.isMalicious && (this.classicalSuspected.has(d.id) || this.mlSuspected.has(d.id))).length / Math.max(1, this.maliciousCount)) * 100;
+            const netHealth = ((this.totalDrones - this.quarantinedDrones.size) / this.totalDrones) * 100;
+            this.trustHistory.push({ frame: this.frame, avgTrust, detRate, netHealth });
+            if (this.trustHistory.length > this.maxHistoryLength) this.trustHistory.shift();
         }
     }
 
@@ -494,25 +563,26 @@ class PygameMirageSimulation {
                 ctx.beginPath(); ctx.moveTo(bodyX, bodyY + 2); ctx.lineTo(rx, ry + 2); ctx.stroke();
             });
 
-            // Rotors with spinning blades
-            const spin = this.frame % 12;
+            // Rotors with smooth continuous spinning blades
+            const spinAngle = (this.frame * 0.3 + d.id * 1.5);
             rotorPoints.forEach(([rx, ry]) => {
                 ctx.fillStyle = 'rgb(18, 20, 28)';
                 ctx.beginPath(); ctx.arc(rx, ry, 9, 0, Math.PI * 2); ctx.fill();
-
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 1;
                 ctx.beginPath(); ctx.arc(rx, ry, 9, 0, Math.PI * 2); ctx.stroke();
-
+                // Continuous rotation blades
                 ctx.strokeStyle = 'rgb(170, 175, 185)';
                 ctx.lineWidth = 2;
-                if (spin < 6) {
-                    ctx.beginPath(); ctx.moveTo(rx - 11, ry); ctx.lineTo(rx + 11, ry); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(rx, ry - 11); ctx.lineTo(rx + 11, ry); ctx.stroke();
-                } else {
-                    ctx.beginPath(); ctx.moveTo(rx - 8, ry - 8); ctx.lineTo(rx + 8, ry + 8); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(rx + 8, ry - 8); ctx.lineTo(rx - 8, ry + 8); ctx.stroke();
-                }
+                const bLen = 11;
+                ctx.beginPath();
+                ctx.moveTo(rx + Math.cos(spinAngle) * bLen, ry + Math.sin(spinAngle) * bLen);
+                ctx.lineTo(rx - Math.cos(spinAngle) * bLen, ry - Math.sin(spinAngle) * bLen);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(rx + Math.cos(spinAngle + Math.PI/2) * bLen, ry + Math.sin(spinAngle + Math.PI/2) * bLen);
+                ctx.lineTo(rx - Math.cos(spinAngle + Math.PI/2) * bLen, ry - Math.sin(spinAngle + Math.PI/2) * bLen);
+                ctx.stroke();
             });
 
             // Fuselage Body
@@ -522,16 +592,33 @@ class PygameMirageSimulation {
             ctx.fillStyle = color;
             ctx.beginPath(); ctx.arc(bodyX, bodyY, 8, 0, Math.PI * 2); ctx.fill();
 
+            // Trust bar above drone
+            const trustPct = this.trustScores[d.id] / 100;
+            const barW = 30, barH = 3;
+            const barX = bodyX - barW / 2, barY2 = bodyY - 28;
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(barX, barY2, barW, barH);
+            ctx.fillStyle = trustPct > 0.7 ? '#00ff64' : trustPct > 0.45 ? '#ffdc00' : '#ff3c3c';
+            ctx.fillRect(barX, barY2, barW * trustPct, barH);
+
             // Text Label
             ctx.fillStyle = '#ffffff';
             ctx.font = '10px "Share Tech Mono"';
-            ctx.fillText(`UAV #${d.id} [${Math.round(this.trustScores[d.id])}%]`, bodyX - 24, bodyY - 18);
+            ctx.fillText(`UAV #${d.id} [${Math.round(this.trustScores[d.id])}%]`, bodyX - 24, bodyY - 32);
 
-            // Selected Drone Highlight
+            // Selected Drone Highlight (animated corners)
             if (d.id === this.selectedDroneId) {
                 ctx.strokeStyle = '#00ffff';
                 ctx.lineWidth = 2;
-                ctx.strokeRect(bodyX - 26, bodyY - 24, 52, 48);
+                const sz = 26, cl = 10;
+                // Top-left
+                ctx.beginPath(); ctx.moveTo(bodyX-sz, bodyY-sz+cl); ctx.lineTo(bodyX-sz, bodyY-sz); ctx.lineTo(bodyX-sz+cl, bodyY-sz); ctx.stroke();
+                // Top-right
+                ctx.beginPath(); ctx.moveTo(bodyX+sz-cl, bodyY-sz); ctx.lineTo(bodyX+sz, bodyY-sz); ctx.lineTo(bodyX+sz, bodyY-sz+cl); ctx.stroke();
+                // Bottom-left
+                ctx.beginPath(); ctx.moveTo(bodyX-sz, bodyY+sz-cl); ctx.lineTo(bodyX-sz, bodyY+sz); ctx.lineTo(bodyX-sz+cl, bodyY+sz); ctx.stroke();
+                // Bottom-right
+                ctx.beginPath(); ctx.moveTo(bodyX+sz-cl, bodyY+sz); ctx.lineTo(bodyX+sz, bodyY+sz); ctx.lineTo(bodyX+sz, bodyY+sz-cl); ctx.stroke();
             }
         });
 
@@ -544,34 +631,71 @@ class PygameMirageSimulation {
 
         ctx.fillStyle = '#00ffff';
         ctx.font = 'bold 15px "Orbitron"';
-        ctx.fillText('MIRAGE: BYZANTINE AUTONOMOUS AGENT', 28, 43);
+        ctx.fillText('MIRAGE: BYZANTINE AUTONOMOUS AGENT', 28, 38);
+
+        ctx.fillStyle = '#e6edf8';
+        ctx.font = '10px "Share Tech Mono"';
+        ctx.fillText('Autonomous swarm trust analysis under Byzantine adversaries', 28, 53);
+
+        ctx.fillStyle = '#ffdc00';
+        ctx.font = '10px "Share Tech Mono"';
+        ctx.fillText(`FRAME ${this.frame}  |  MODE: ${this.detectionMode}`, 400, 38);
 
         // 11. Large Graph Overlay (if toggled on via 'G')
-        if (this.showLargeGraph) {
-            ctx.fillStyle = 'rgba(4, 8, 18, 0.94)';
-            ctx.fillRect(30, 70, width - 60, height - 140);
+        if (this.showLargeGraph && this.trustHistory.length > 2) {
+            const gx = 50, gy = 80, gw = width - 100, gh = height - 170;
+            ctx.fillStyle = 'rgba(4, 8, 18, 0.96)';
+            ctx.fillRect(gx - 10, gy - 20, gw + 20, gh + 60);
             ctx.strokeStyle = '#00ffff';
             ctx.lineWidth = 2;
-            ctx.strokeRect(30, 70, width - 60, height - 140);
+            ctx.strokeRect(gx - 10, gy - 20, gw + 20, gh + 60);
 
             ctx.fillStyle = '#00ffff';
-            ctx.font = 'bold 16px "Orbitron"';
-            ctx.fillText('REAL-TIME MESH TOPOLOGY & TRUST TRAJECTORY', 50, 105);
+            ctx.font = 'bold 14px "Orbitron"';
+            ctx.fillText('REAL-TIME TELEMETRY GRAPH', gx, gy - 4);
 
-            ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
-            ctx.beginPath();
-            ctx.moveTo(60, 380); ctx.lineTo(width - 80, 380); ctx.stroke();
+            // Grid lines
+            ctx.strokeStyle = 'rgba(0,255,255,0.12)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = gy + (gh / 4) * i;
+                ctx.beginPath(); ctx.moveTo(gx, y); ctx.lineTo(gx + gw, y); ctx.stroke();
+                ctx.fillStyle = '#536482';
+                ctx.font = '10px "Share Tech Mono"';
+                ctx.fillText(`${100 - i * 25}%`, gx - 10, y + 4);
+            }
 
-            this.drones.forEach((d, i) => {
-                const score = this.trustScores[d.id];
-                const barY = 380 - (score * 2.2);
-                ctx.fillStyle = d.isMalicious ? '#ff3c3c' : '#00ff64';
-                ctx.fillRect(70 + i * 20, barY, 14, score * 2.2);
+            // Draw lines
+            const drawLine = (data, key, color) => {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                data.forEach((d, i) => {
+                    const x = gx + (i / (data.length - 1)) * gw;
+                    const y = gy + gh - (d[key] / 100) * gh;
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+            };
+
+            drawLine(this.trustHistory, 'avgTrust', '#00ff64');
+            drawLine(this.trustHistory, 'detRate', '#ff3c3c');
+            drawLine(this.trustHistory, 'netHealth', '#00ffff');
+
+            // Legend
+            const legendY = gy + gh + 20;
+            [['AVG TRUST', '#00ff64'], ['DETECTION RATE', '#ff3c3c'], ['NETWORK HEALTH', '#00ffff']].forEach(([label, color], i) => {
+                const lx = gx + i * 180;
+                ctx.fillStyle = color;
+                ctx.fillRect(lx, legendY, 12, 12);
+                ctx.fillStyle = '#e6edf8';
+                ctx.font = '10px "Share Tech Mono"';
+                ctx.fillText(label, lx + 18, legendY + 10);
             });
 
             ctx.fillStyle = '#8a99b5';
-            ctx.font = '12px "Share Tech Mono"';
-            ctx.fillText('Press [G] or [ESC] to return to simulation', 50, height - 90);
+            ctx.font = '11px "Share Tech Mono"';
+            ctx.fillText('Press [G] or [ESC] to close', gx, gy + gh + 45);
         }
 
         // 12. Scenario Selection Menu Overlay (if toggled on via 'S')
@@ -621,6 +745,8 @@ class PygameMirageSimulation {
         ctx.fillText('SPACE Pause  R Reset  S Scenario  C Comms  M Mission  Q Quarantine  G Graph  N Next  TAB Page', 26, height - 32);
         ctx.fillStyle = '#00ffff';
         ctx.fillText('1 Classical  2 ML  3 Both  4 Hybrid  L Logging  E Export', 26, height - 16);
+        ctx.fillStyle = '#00ff64';
+        ctx.fillText(`${this.fps} FPS`, width - 75, height - 32);
     }
 
     renderRightPanel() {
@@ -839,6 +965,9 @@ class PygameMirageSimulation {
     startLoop() {
         this.renderRightPanel();
         const loop = () => {
+            const now = performance.now();
+            this.fps = Math.round(1000 / Math.max(1, now - this.lastFrameTime));
+            this.lastFrameTime = now;
             this.update();
             this.draw();
             requestAnimationFrame(loop);
